@@ -5,6 +5,7 @@ const list = document.getElementById('list');
 const form = document.getElementById('form');
 const text = document.getElementById('text');
 const amount = document.getElementById('amount');
+const type = document.getElementById('type');
 
 const localStorageTrans = JSON.parse(localStorage.getItem('transactions'));
 
@@ -17,11 +18,15 @@ function addTransaction(e) {
     if (text.value.trim() === '' && amount.value.trim() === '') {
         alert('Please enter the text and amount :)');
     }
+    else if (type.value === '') {
+        alert('Please tell if it is an income or expense');
+    }
     else {
         const transaction = {
             id: Math.floor(Math.random() * 1000000),
             text: text.value,
-            amount: +amount.value
+            amount: +amount.value,
+            type: type.value
         }
 
         transactions.push(transaction);
@@ -32,17 +37,18 @@ function addTransaction(e) {
 
         text.value = '';
         amount.value = '';
+        type.value = '';
     }
 }
 
 //show transactions to DOM 
 function addTransactionDOM(transaction) {
-    const sign = transaction.amount < 0 ? '-' : '+';
+    const sign = transaction.type === 'expense' ? '-' : '+';
 
     const listItem = document.createElement('li');
 
     //add class based on value
-    listItem.classList.add(transaction.amount < 0 ? 'minus' : 'plus');
+    listItem.classList.add(transaction.type === 'expense' ? 'minus' : 'plus');
 
     listItem.innerHTML = `
         ${transaction.text} <span>${sign}${Math.abs(transaction.amount)}</span><button class="delete-btn" onclick="removeTransaction(${transaction.id})">x</button>
@@ -53,28 +59,31 @@ function addTransactionDOM(transaction) {
 
 //update the balance, income and expense
 function updateValues() {
-    const amounts = transactions.map(transaction => transaction.amount);
-    // console.log(amounts);
+    const income = transactions.filter(transaction => transaction.type === 'income');
+    // console.log("income", income);
 
-    const total = amounts.reduce((acc, amount) => (acc += amount), 0);
-    if (total > 0) {
+    const expense = transactions.filter(transaction => transaction.type === 'expense');
+    // console.log("expense", expense);
+
+    const totalIncome = (income
+        .map(transaction => transaction.amount)
+        .reduce((acc, amount) => (acc += amount), 0));
+
+    const totalExpense = (expense
+        .map(transaction => transaction.amount)
+        .reduce((acc, amount) => (acc += amount), 0));
+
+    const total = totalIncome >= totalExpense ? totalIncome - totalExpense : totalExpense - totalIncome;
+    if (totalIncome > totalExpense) {
         balance.className = 'balance plus';
     }
     else {
         balance.className = 'balance minus';
     }
 
-    const income = amounts
-        .filter(amount => amount > 0)
-        .reduce((acc, amount) => (acc += amount), 0);
-
-    const expense = (amounts
-        .filter(amount => amount < 0)
-        .reduce((acc, amount) => (acc += amount), 0)) * -1;
-
-    money_plus.innerHTML = `+ <i class="fa-solid fa-indian-rupee-sign"></i>${income}`;
-    money_minus.innerHTML = `- <i class="fa-solid fa-indian-rupee-sign"></i>${expense}`;
-    balance.innerHTML = `<i class="fa-solid fa-indian-rupee-sign"></i>${total > 0 ? total : total * -1}`;
+    money_plus.innerHTML = `<i class="fa-solid fa-indian-rupee-sign"></i>${totalIncome}`;
+    money_minus.innerHTML = `<i class="fa-solid fa-indian-rupee-sign"></i>${totalExpense}`;
+    balance.innerHTML = `<i class="fa-solid fa-indian-rupee-sign"></i>${total}`;
 }
 
 //remove transaction by id

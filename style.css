@@ -19,6 +19,14 @@ body {
     font-family: 'Roboto', sans-serif;
 }
 
+.heading {
+    background-color: rgba(0, 0, 0, 0.737);
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: var(--box-shadow);
+}
+
 .container {
     margin: 20px;
     /* width: 500px; */
@@ -100,6 +108,15 @@ input {
     width: 100%;
 }
 
+select {
+    width: 50%;
+    background-color: white;
+    border: 1px solid #dedede;
+    border-radius: 4px;
+    font-size: 14px;
+    padding: 7px;
+}
+
 .btn {
     background-color: #9c88ff;
     color: white;
@@ -115,7 +132,8 @@ input {
 }
 
 input:focus,
-.btn:focus {
+.btn:focus,
+select:focus {
     outline: 0;
 }
 
@@ -164,5 +182,11 @@ input:focus,
 @media (max-width: 750px) {
     .container {
         width: 80vw;
+    }
+}
+
+@media (max-width: 540px) {
+    select {
+        width: 70%;
     }
 }
