@@ -1,7 +1,7 @@
-# Expense Tracker
+# FinSmart - Expense Tracker
 Keep track of income, expenses and balance. Add and remove transactions and save it to local storage.
 
-[Live Demo](https://tracks-expenses.netlify.app/)
+[Live Demo](https://finsmart.netlify.app/)
 
 # Project Specifications
 - Create beautiful UI for project
